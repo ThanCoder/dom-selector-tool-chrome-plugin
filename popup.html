@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        width: 500px;
+        padding: 10px;
+        font-family: sans-serif;
+      }
+      textarea {
+        width: 100%;
+        height: 100px;
+        margin-top: 10px;
+        resize: vertical;
+      }
+      /* Button တွေ အားလုံးအတွက် အခြေခံ Style */
+      button {
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      /* Add More Button (အပြာနုရောင်) */
+      #addMore {
+        background-color: #e8f0fe;
+        color: #1967d2;
+        width: 100%;
+      }
+
+      #addMore:hover {
+        background-color: #d2e3fc;
+      }
+
+      /* Fetch Query Button (အပြာရင့်ရောင် - Main Action) */
+      #extractBtn {
+        background-color: #1a73e8;
+        color: white;
+        width: 100%;
+        font-weight: bold;
+      }
+
+      #extractBtn:hover {
+        background-color: #1557b0;
+        box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3);
+      }
+
+      /* Copy Text Button (အစိမ်းရောင်) */
+      #copyText {
+        background-color: #34a853;
+        color: white;
+        width: 100%;
+      }
+
+      #copyText:hover {
+        background-color: #2d8e47;
+      }
+
+      /* Button တွေ တစ်ခုနဲ့တစ်ခု အရမ်းမကပ်အောင် Container logic */
+      .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 15px;
+      }
+      button {
+        width: 100%;
+        cursor: pointer;
+        padding: 8px;
+      }
+      .input-header {
+        display: flex;
+        gap: 8px;
+        padding: 0 5px; /* input-box ရဲ့ padding နဲ့ ညီအောင် */
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 12px;
+        color: #555;
+        text-transform: uppercase;
+      }
+
+      /* Header ထဲက စာသားတွေကို အလယ်တည့်တည့်ဖြစ်ချင်ရင် */
+      .input-header span {
+        display: inline-block;
+      }
+      /* Input တစ်ကြောင်းလုံးစာ Container */
+      .input-box {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Element တစ်ခုနဲ့တစ်ခု ကြားအကွာအဝေး */
+        margin-bottom: 10px;
+        background: #f9f9f9;
+        padding: 5px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+      }
+
+      /* Number ရိုက်တဲ့ input (Index) */
+      .selector-index {
+        width: 30px;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+      }
+
+      /* Text ရိုက်တဲ့ input (Query Selector) */
+      .selector {
+        flex-grow: 1; /* ကျန်တဲ့နေရာအလွတ် အကုန်ယူမယ် */
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        outline: none;
+      }
+
+      /* Input တွေ Focus ရောက်တဲ့အခါ အရောင်ပြောင်းဖို့ */
+      .selector:focus,
+      .selector-index:focus {
+        border-color: #4285f4; /* Google Blue color */
+        box-shadow: 0 0 3px rgba(66, 133, 244, 0.3);
+      }
+
+      /* Delete Button (X) */
+      .selector-del-btn {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 4px;
+
+        /* Size ကို သတ်မှတ်ပေးလိုက်ပါ */
+        width: 30px;
+        height: 30px;
+
+        /* စာသားကို အလယ်ဗဟိုကျအောင် လုပ်နည်း */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 14px; /* စာသားအရွယ်အစားကို ဒီမှာ လျှော့နိုင်ပါတယ် */
+        font-weight: bold;
+        cursor: pointer;
+        flex-shrink: 0; /* Box ကျဉ်းသွားရင် ခလုတ်ပုံပျက်မသွားအောင် */
+      }
+
+      .selector-del-btn:hover {
+        background-color: #cc0000;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>DOM Content Extractor</h3>
+    <div class="input-header">
+      <span style="width: 50px">Index</span>
+      <span style="flex-grow: 1">Query Selector</span>
+      <span style="width: 30px"></span>
+    </div>
+    <div id="inputContainer">
+      <div class="input-box">
+        <input type="checkbox" class="selector-checkbox" checked />
+        <input type="number" class="selector-index" value="0" min="0" />
+        <input
+          type="text"
+          class="selector"
+          placeholder="e.g. .title or #main"
+          value=".chr-text"
+        />
+        <button class="selector-del-btn">X</button>
+      </div>
+      <div class="input-box">
+        <input type="checkbox" class="selector-checkbox" checked />
+        <input type="number" class="selector-index" value="0" min="0" />
+        <input
+          type="text"
+          class="selector"
+          placeholder="e.g. .title or #main"
+          value="#chr-content"
+        />
+        <button class="selector-del-btn">X</button>
+      </div>
+    </div>
+    <div class="button-group">
+      <button id="addMore">+ Add More Selector</button>
+      <button id="extractBtn">Fetch Query</button>
+      <button id="copyText" style="display: none">Copy Text</button>
+    </div>
+    <textarea
+      id="resultArea"
+      placeholder="Result will appear here..."
+    ></textarea>
+    <script src="popup.js"></script>
+  </body>
+</html>
