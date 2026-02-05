@@ -26,8 +26,8 @@ button {
   gap: 8px;
 }
 #inputContainer {
-    max-height: 200px;
-    overflow-y: auto;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 /* Add More Button (အပြာနုရောင်) */
@@ -79,13 +79,13 @@ button {
 }
 .input-header {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   padding: 0 5px; /* input-box ရဲ့ padding နဲ့ ညီအောင် */
-  margin-bottom: 5px;
-  font-weight: bold;
-  font-size: 12px;
-  color: #555;
   text-transform: uppercase;
+  font-size: 11px;
+  color: #666;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
 /* Header ထဲက စာသားတွေကို အလယ်တည့်တည့်ဖြစ်ချင်ရင် */
@@ -154,4 +154,31 @@ button {
 
 .selector-del-btn:hover {
   background-color: #cc0000;
+}
+
+.attr-select {
+  /* width: 50px; */
+  flex: none;
+  background: #fff;
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+
+  /* အမြင့်ကို ညှိချင်ရင် */
+  height: 30px;
+
+  /* စာသားနဲ့ အိုင်ကွန်ကြား နေရာလွတ်ပေးတာ */
+  min-width: 100px;
+
+  outline: none;
+  transition: border-color 0.2s;
+}
+.selector-checkbox {
+  width: 18px;
+  height: 18px;
+  /* accent-color: red; */
+  vertical-align: middle;
 }

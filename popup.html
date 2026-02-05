@@ -6,34 +6,38 @@
   <body>
     <h3>DOM Content Extractor</h3>
     <div class="input-header">
+      <span style="width: 20px">CH</span>
       <span style="width: 50px">Index</span>
+      <div style="width: 80px">Attribute</div>
       <span style="flex-grow: 1">Query Selector</span>
       <span style="width: 30px"></span>
     </div>
+    <!-- dynamic -->
     <div id="inputContainer">
-      <div class="input-box">
-        <input type="checkbox" class="selector-checkbox" checked />
-        <input type="number" class="selector-index" value="0" min="0" />
-        <input
-          type="text"
-          class="selector"
-          placeholder="e.g. .title or #main"
-          value=".chr-text"
-        />
-        <button class="selector-del-btn">X</button>
-      </div>
-      <div class="input-box">
-        <input type="checkbox" class="selector-checkbox" checked />
-        <input type="number" class="selector-index" value="0" min="0" />
-        <input
-          type="text"
-          class="selector"
-          placeholder="e.g. .title or #main"
-          value="#chr-content"
-        />
-        <button class="selector-del-btn">X</button>
-      </div>
+      <input type="checkbox" class="selector-checkbox" checked />
+      <input
+        type="number"
+        class="selector-index"
+        value="${item.index}"
+        min="0"
+      />
+      <select class="attr-select">
+        <option value="text" selected>Text</option>
+        <option value="html">HTML</option>
+        <option value="src">src</option>
+        <option value="href">href</option>
+        <option value="value">Value</option>
+      </select>
+
+      <input
+        type="text"
+        class="selector"
+        value="${item.query}"
+        placeholder="e.g. .title or #main"
+      />
+      <button class="selector-del-btn">X</button>
     </div>
+    <!-- btn -->
     <div class="button-group">
       <button id="addMore">+ Add More Selector</button>
       <button id="extractBtn">Fetch Query</button>

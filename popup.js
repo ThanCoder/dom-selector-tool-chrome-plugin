@@ -10,6 +10,7 @@ async function init() {
       index: box.querySelector(".selector-index").value,
       query: box.querySelector(".selector").value,
       isActive: box.querySelector(".selector-checkbox").checked, // Checked ဖြစ်မဖြစ် စစ်တာ
+      attr: box.querySelector(".attr-select").value,
     };
   });
 
@@ -29,7 +30,14 @@ async function init() {
           const targetEle = eles[val.index];
 
           if (!targetEle) continue;
-          results.push(targetEle.innerText.trim()); // စာသားကို Array ထဲ ထည့်မယ်
+          // စာသားကို Array ထဲ ထည့်မယ်
+
+          if (val.attr === "text") results.push(targetEle.innerText.trim());
+          else if (val.attr === "html")
+            results.push(targetEle.innerHTML.trim());
+          else if (val.attr === "src") results.push(targetEle.src);
+          else if (val.attr === "href") results.push(targetEle.href);
+          else if (val.attr === "value") results.push(targetEle.value);
         }
 
         return results.join("\n\n");
@@ -42,6 +50,7 @@ async function init() {
         if (frameResult.result) {
           textarea.style.height = "200px";
           document.getElementById("copyText").style.display = "block";
+          // saveToStorage();
         } else {
           textarea.style.height = "100px";
           document.getElementById("copyText").style.display = "none";
@@ -106,9 +115,11 @@ function saveToStorage() {
     return {
       index: box.querySelector(".selector-index").value,
       query: box.querySelector(".selector").value,
-      isActive: box.querySelector(".selector-checkbox").checked,
+      isActive: box.querySelector(".selector-checkbox").checked, // Checked ဖြစ်မဖြစ် စစ်တာ
+      attr: box.querySelector(".attr-select").value,
     };
   });
+  // console.log(config);
   localStorage.setItem("chrome-dom-selector-tool-data", JSON.stringify(config));
 }
 
@@ -122,6 +133,7 @@ function loadFromStorage() {
 
   // လက်ရှိရှိနေတဲ့ input-box တွေကို အကုန်ဖျက်ပြီး အသစ်ပြန်တည်ဆောက်မယ် (သို့မဟုတ် ပထမတစ်ခုမှာ ပြန်ဖြည့်မယ်)
   container.innerHTML = ""; // Container ကို ရှင်းထုတ်လိုက်တာ
+  // console.log(config);
 
   config.forEach((item) => {
     const box = document.createElement("div");
@@ -129,20 +141,38 @@ function loadFromStorage() {
     box.innerHTML = `
       <input type="checkbox" class="selector-checkbox" ${item.isActive ? "checked" : ""} />
       <input type="number" class="selector-index" value="${item.index}" min="0" />
+       <select class="attr-select">
+        <option value="text" ${item.attr === "text" ? "selected" : ""}>Text</option>
+        <option value="html" ${item.attr === "html" ? "selected" : ""}>HTML</option>
+        <option value="src" ${item.attr === "src" ? "selected" : ""}>src</option>
+        <option value="href" ${item.attr === "href" ? "selected" : ""}>href</option>
+        <option value="value" ${item.attr === "value" ? "selected" : ""}>Value</option>
+    </select>
+      
       <input type="text" class="selector" value="${item.query}" placeholder="e.g. .title or #main" />
       <button class="selector-del-btn">X</button>
     `;
     container.appendChild(box);
   });
+
+  init();
 }
 
-function createNewInput(item) {
+function createNewInput(item, attrVal = "text") {
   const container = document.getElementById("inputContainer");
   const box = document.createElement("div");
   box.className = "input-box";
   box.innerHTML = `
       <input type="checkbox" class="selector-checkbox" ${item.isActive ? "checked" : ""} />
       <input type="number" class="selector-index" value="${item.index}" min="0" />
+       <select class="attr-select">
+        <option value="text" ${attrVal === "text" ? "selected" : ""}>Text</option>
+        <option value="html" ${attrVal === "html" ? "selected" : ""}>HTML</option>
+        <option value="src" ${attrVal === "src" ? "selected" : ""}>src</option>
+        <option value="href" ${attrVal === "href" ? "selected" : ""}>href</option>
+        <option value="value" ${attrVal === "value" ? "selected" : ""}>Value</option>
+    </select>
+      
       <input type="text" class="selector" value="${item.query}" placeholder="e.g. .title or #main" />
       <button class="selector-del-btn">X</button>
     `;
@@ -154,9 +184,6 @@ document.getElementById("addMore").addEventListener("click", () => {
   createNewInput({ index: 0, query: "", isActive: true });
 });
 
-// Popup ပွင့်လာတာနဲ့ Load လုပ်မယ်
-document.addEventListener("DOMContentLoaded", loadFromStorage);
-
 // Event Delegation သုံးပြီး input ပြောင်းတိုင်း သိမ်းမယ်
 document
   .getElementById("inputContainer")
@@ -166,4 +193,5 @@ document.getElementById("extractBtn").addEventListener("click", init);
 // copy
 document.getElementById("copyText").addEventListener("click", copyTextarea);
 
-document.addEventListener("DOMContentLoaded", init);
+// Popup ပွင့်လာတာနဲ့ Load လုပ်မယ်
+document.addEventListener("DOMContentLoaded", loadFromStorage);
