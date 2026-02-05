@@ -160,6 +160,8 @@ function saveToStorage() {
   const actionData = {
     copiedAutoClose: document.querySelector("#copied-auto-close-checkbox")
       .checked,
+    copiedshowMessage: document.querySelector("#copied-message-checkbox")
+      .checked,
     autoNextCheckBox: document.querySelector(".auto-next-selector-checkbox")
       .checked,
     autoNextUrlQuery: document.querySelector(".auto-next-selector-query").value,
@@ -186,6 +188,13 @@ function loadFromStorage() {
       if (actionData["copiedAutoClose"]) {
         document.querySelector("#copied-auto-close-checkbox").checked =
           actionData["copiedAutoClose"] ? true : false;
+      }
+      if (actionData["copiedshowMessage"]) {
+        document.querySelector("#copied-message-checkbox").checked = actionData[
+          "copiedshowMessage"
+        ]
+          ? true
+          : false;
       }
       //#next_chap
       if (actionData["autoNextCheckBox"]) {
@@ -271,13 +280,15 @@ async function callAutoAction() {
     chrome.tabs.update(tab.id, { url });
   }
 
-  chrome.notifications.create({
-    type: "basic",
-    iconUrl: "icon.png",
-    title: "Copied!",
-    message: "Clipboard Copied",
-  });
-
+  // show message
+  if (document.querySelector("#copied-message-checkbox").checked) {
+    chrome.notifications.create({
+      type: "basic",
+      iconUrl: "icon.png",
+      title: "Copied!",
+      message: "Clipboard Copied",
+    });
+  }
   // box close
   if (document.querySelector("#copied-auto-close-checkbox").checked) {
     setTimeout(() => {
