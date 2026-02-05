@@ -106,6 +106,7 @@ async function copyTextarea() {
     document.execCommand("copy");
     alert("Copied using fallback!");
   }
+  callAutoAction()
 }
 
 // Data တွေကို localStorage ထဲ သိမ်းမယ့် function
@@ -177,6 +178,14 @@ function createNewInput(item, attrVal = "text") {
       <button class="selector-del-btn">X</button>
     `;
   container.appendChild(box);
+}
+
+// auto action
+function callAutoAction() {
+  const copiedAutoClose = document.getElementById("copied-auto-close-checkbox").checked;
+  if (copiedAutoClose) {
+    window.close();
+  }
 }
 
 // new input

@@ -182,3 +182,13 @@ button {
   /* accent-color: red; */
   vertical-align: middle;
 }
+
+.auto-action-group {
+  margin: 10px;
+}
+.auto-action-group input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  /* accent-color: red; */
+  vertical-align: middle;
+}
