@@ -1,4 +1,4 @@
-document.getElementById("extractBtn").addEventListener("click", async () => {
+async function init() {
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   // popup.html scoped
   //new box
@@ -40,7 +40,7 @@ document.getElementById("extractBtn").addEventListener("click", async () => {
         const textarea = document.getElementById("resultArea");
         textarea.value = frameResult.result;
         if (frameResult.result) {
-          textarea.style.height = "300px";
+          textarea.style.height = "200px";
           document.getElementById("copyText").style.display = "block";
         } else {
           textarea.style.height = "100px";
@@ -49,12 +49,8 @@ document.getElementById("extractBtn").addEventListener("click", async () => {
       }
     },
   );
-});
+}
 
-// new input
-document.getElementById("addMore").addEventListener("click", () => {
-  createNewInput({ index: 0, query: "", isActive: true });
-});
 //remove input
 // inputContainer တစ်ခုလုံးကို Listen လုပ်ထားခြင်း (ပိုထိရောက်ပါတယ်)
 document.getElementById("inputContainer").addEventListener("click", (event) => {
@@ -72,8 +68,7 @@ document.getElementById("inputContainer").addEventListener("click", (event) => {
   }
 });
 
-// copy
-document.getElementById("copyText").addEventListener("click", async () => {
+async function copyTextarea() {
   const ele = document.getElementById("resultArea");
   const textToCopy = ele.value;
 
@@ -102,7 +97,7 @@ document.getElementById("copyText").addEventListener("click", async () => {
     document.execCommand("copy");
     alert("Copied using fallback!");
   }
-});
+}
 
 // Data တွေကို localStorage ထဲ သိမ်းမယ့် function
 function saveToStorage() {
@@ -154,6 +149,11 @@ function createNewInput(item) {
   container.appendChild(box);
 }
 
+// new input
+document.getElementById("addMore").addEventListener("click", () => {
+  createNewInput({ index: 0, query: "", isActive: true });
+});
+
 // Popup ပွင့်လာတာနဲ့ Load လုပ်မယ်
 document.addEventListener("DOMContentLoaded", loadFromStorage);
 
@@ -161,3 +161,9 @@ document.addEventListener("DOMContentLoaded", loadFromStorage);
 document
   .getElementById("inputContainer")
   .addEventListener("input", saveToStorage);
+
+document.getElementById("extractBtn").addEventListener("click", init);
+// copy
+document.getElementById("copyText").addEventListener("click", copyTextarea);
+
+document.addEventListener("DOMContentLoaded", init);
