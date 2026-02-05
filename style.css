@@ -1,6 +1,6 @@
 body {
   width: 500px;
-  padding: 10px;
+  padding: 5px;
   font-family: sans-serif;
 }
 textarea {
@@ -156,7 +156,8 @@ button {
   background-color: #cc0000;
 }
 
-.attr-select {
+.attr-select,
+select {
   /* width: 50px; */
   flex: none;
   background: #fff;
@@ -185,10 +186,27 @@ button {
 
 .auto-action-group {
   margin: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
 .auto-action-group input[type="checkbox"] {
   width: 15px;
   height: 15px;
   /* accent-color: red; */
   vertical-align: middle;
+}
+
+.auto-action-group input[type="text"] {
+  flex-grow: 1; /* ကျန်တဲ့နေရာအလွတ် အကုန်ယူမယ် */
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.auto-next-container .auto-next-selector-result {
+  display: block;
+  margin-top: 10px;
+  width: 100%;
 }

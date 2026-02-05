@@ -5,7 +5,7 @@ async function init() {
 
   // Input Box တစ်ခုချင်းစီကနေ data တွေကို စုစည်းမယ်
   const inputBoxes = document.querySelectorAll(".input-box");
-  const config = Array.from(inputBoxes).map((box) => {
+  const queries = Array.from(inputBoxes).map((box) => {
     return {
       index: box.querySelector(".selector-index").value,
       query: box.querySelector(".selector").value,
@@ -13,6 +13,17 @@ async function init() {
       attr: box.querySelector(".attr-select").value,
     };
   });
+  const config = {
+    queries,
+    actions: {
+      autoNextQuery: {
+        isActive: document.querySelector(".auto-next-selector-checkbox")
+          .checked,
+        attr: document.querySelector(".auto-next-selector-attr").value,
+        selector: document.querySelector(".auto-next-selector-query").value,
+      },
+    },
+  };
 
   chrome.scripting.executeScript(
     {
@@ -21,8 +32,9 @@ async function init() {
       func: (config) => {
         // ဒီနေရာမှာ မိမိလိုချင်တဲ့ DOM element ကို select လုပ်ပါ
         let results = [];
-
-        for (const val of config) {
+        let data = {};
+        // elements selector from textarea
+        for (const val of config.queries) {
           if (!val.isActive) continue;
           const eles = document.querySelectorAll(val.query);
           if (val.index > eles.length) continue;
@@ -39,14 +51,30 @@ async function init() {
           else if (val.attr === "href") results.push(targetEle.href);
           else if (val.attr === "value") results.push(targetEle.value);
         }
+        data["data"] = results.join("\n\n");
 
-        return results.join("\n\n");
+        // action query
+        const autoNextQuery = config.actions.autoNextQuery;
+        if (autoNextQuery.isActive) {
+          const ele = document.querySelector(autoNextQuery["selector"]);
+          if (ele) {
+            if (autoNextQuery["attr"] == "href") {
+              data["autoNextQueryResult"] = ele.href;
+            }
+            if (autoNextQuery["src"] == "href") {
+              data["autoNextQueryResult"] = ele.src;
+            }
+          }
+        }
+        // console.log(data);
+
+        return data;
       },
     },
     (injectionResults) => {
       for (const frameResult of injectionResults) {
         const textarea = document.getElementById("resultArea");
-        textarea.value = frameResult.result;
+        textarea.value = frameResult.result.data;
         if (frameResult.result) {
           textarea.style.height = "200px";
           document.getElementById("copyText").style.display = "block";
@@ -54,6 +82,11 @@ async function init() {
         } else {
           textarea.style.height = "100px";
           document.getElementById("copyText").style.display = "none";
+        }
+        // show action result
+        if (frameResult.result["autoNextQueryResult"]) {
+          document.querySelector(".auto-next-selector-result").value =
+            frameResult.result["autoNextQueryResult"];
         }
       }
     },
@@ -125,8 +158,13 @@ function saveToStorage() {
 
   // action
   const actionData = {
-    copiedAutoClose: document.getElementById("copied-auto-close-checkbox")
+    copiedAutoClose: document.querySelector("#copied-auto-close-checkbox")
       .checked,
+    autoNextCheckBox: document.querySelector(".auto-next-selector-checkbox")
+      .checked,
+    autoNextUrlQuery: document.querySelector(".auto-next-selector-query").value,
+    autoNextUrlQueryAttr: document.querySelector(".auto-next-selector-attr")
+      .value,
   };
   localStorage.setItem(
     "chrome-dom-selector-tool-action-data",
@@ -135,6 +173,7 @@ function saveToStorage() {
   console.log(`Save Action: ${JSON.stringify(actionData)}`);
 }
 
+// load storage
 function loadFromStorage() {
   const savedData = localStorage.getItem("chrome-dom-selector-tool-data");
   const actionJson = localStorage.getItem(
@@ -143,11 +182,29 @@ function loadFromStorage() {
   const actionData = JSON.parse(actionJson);
   // action
   if (actionData) {
-    const autoClose = document.getElementById("copied-auto-close-checkbox");
+    try {
+      if (actionData["copiedAutoClose"]) {
+        document.querySelector("#copied-auto-close-checkbox").checked =
+          actionData["copiedAutoClose"] ? true : false;
+      }
+      //#next_chap
+      if (actionData["autoNextCheckBox"]) {
+        document.querySelector(".auto-next-selector-checkbox").checked =
+          actionData["autoNextCheckBox"] ? true : false;
+      }
+      if (actionData["autoNextUrlQuery"]) {
+        document.querySelector(".auto-next-selector-query").value =
+          actionData["autoNextUrlQuery"];
+      }
+      if (actionData["autoNextUrlQueryAttr"]) {
+        const select = document.querySelector(".auto-next-selector-attr");
+        select.value = actionData["autoNextUrlQueryAttr"]; // "href" လည်းထည့်လို့ရ
+      }
 
-    autoClose.checked = actionData.copiedAutoClose ? true : false;
-
-    console.log(`Load Action: ${actionData}`);
+      console.log(`Load Action: ${actionJson}`);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   if (!savedData) return;
@@ -196,7 +253,7 @@ function createNewInput(item, attrVal = "text") {
         <option value="src" ${attrVal === "src" ? "selected" : ""}>src</option>
         <option value="href" ${attrVal === "href" ? "selected" : ""}>href</option>
         <option value="value" ${attrVal === "value" ? "selected" : ""}>Value</option>
-    </select>
+        </select>
       
       <input type="text" class="selector" value="${item.query}" placeholder="e.g. .title or #main" />
       <button class="selector-del-btn">X</button>
@@ -205,12 +262,27 @@ function createNewInput(item, attrVal = "text") {
 }
 
 // auto action
-function callAutoAction() {
-  const copiedAutoClose = document.getElementById(
-    "copied-auto-close-checkbox",
-  ).checked;
-  if (copiedAutoClose) {
-    window.close();
+async function callAutoAction() {
+  // auto next url
+  if (document.querySelector(".auto-next-selector-checkbox").checked) {
+    const url = document.querySelector(".auto-next-selector-result").value;
+    if (url.length == 0) return;
+    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    chrome.tabs.update(tab.id, { url });
+  }
+
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: "icon.png",
+    title: "Copied!",
+    message: "Clipboard Copied",
+  });
+
+  // box close
+  if (document.querySelector("#copied-auto-close-checkbox").checked) {
+    setTimeout(() => {
+      window.close();
+    }, 1200); // toast ပြသထားပြီးမှ ပိတ်
   }
 }
 

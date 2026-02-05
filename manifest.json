@@ -2,9 +2,13 @@
   "manifest_version": 3,
   "name": "DOM Selector Tool",
   "version": "1.0",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "notifications"],
   "action": {
     "default_popup": "popup.html"
   },
-  "icon": "icon.png"
+  "icons": {
+    "48": "icon.png",
+    "96": "icon.png",
+    "128": "icon.png"
+  }
 }

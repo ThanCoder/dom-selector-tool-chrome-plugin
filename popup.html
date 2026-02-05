@@ -13,30 +13,7 @@
       <span style="width: 30px"></span>
     </div>
     <!-- dynamic -->
-    <div id="inputContainer">
-      <input type="checkbox" class="selector-checkbox" checked />
-      <input
-        type="number"
-        class="selector-index"
-        value="${item.index}"
-        min="0"
-      />
-      <select class="attr-select">
-        <option value="text" selected>Text</option>
-        <option value="html">HTML</option>
-        <option value="src">src</option>
-        <option value="href">href</option>
-        <option value="value">Value</option>
-      </select>
-
-      <input
-        type="text"
-        class="selector"
-        value="${item.query}"
-        placeholder="e.g. .title or #main"
-      />
-      <button class="selector-del-btn">X</button>
-    </div>
+    <div id="inputContainer"></div>
     <!-- btn -->
     <div class="button-group">
       <button id="addMore">+ Add More Selector</button>
@@ -45,14 +22,31 @@
     </div>
     <!-- auto action -->
     <div class="auto-action-group">
+      <h3>Auto Action Methods</h3>
       <label for="copied-auto-close-checkbox">
-        <input
-        type="checkbox"
-        id="copied-auto-close-checkbox"
-        checked
-        />
+        <input type="checkbox" id="copied-auto-close-checkbox" />
         Copied Auto Close Popup Box
       </label>
+      <!-- auto next container -->
+      <div class="auto-next-container">
+        <input type="checkbox" class="auto-next-selector-checkbox" />
+        <select class="auto-next-selector-attr">
+          <option value="src">src</option>
+          <option value="href" selected>href</option>
+        </select>
+        <input
+          type="text"
+          class="auto-next-selector-query"
+          value=""
+          placeholder="Auto Next Url Query (e.g. .title or #main) Query"
+        />
+        <input
+          type="text"
+          class="auto-next-selector-result"
+          disabled
+          placeholder="Auto Next Url Query Result"
+        />
+      </div>
     </div>
     <textarea
       id="resultArea"
