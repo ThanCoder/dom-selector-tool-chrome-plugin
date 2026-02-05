@@ -177,6 +177,7 @@ function saveToStorage() {
 
 // load storage
 function loadFromStorage() {
+  checkDarkMode();
   const savedData = localStorage.getItem("chrome-dom-selector-tool-data");
   const actionJson = localStorage.getItem(
     "chrome-dom-selector-tool-action-data",
@@ -280,8 +281,12 @@ async function callAutoAction() {
     chrome.tabs.update(tab.id, { url });
   }
 
+  const isShowMessage = document.querySelector(
+    "#copied-message-checkbox",
+  ).checked;
+
   // show message
-  if (document.querySelector("#copied-message-checkbox").checked) {
+  if (isShowMessage) {
     chrome.notifications.create({
       type: "basic",
       iconUrl: "icon.png",
@@ -291,10 +296,21 @@ async function callAutoAction() {
   }
   // box close
   if (document.querySelector("#copied-auto-close-checkbox").checked) {
-    setTimeout(() => {
+    if (isShowMessage) {
+      setTimeout(() => {
+        window.close();
+      }, 1200); // toast ပြသထားပြီးမှ ပိတ်
+    } else {
       window.close();
-    }, 1200); // toast ပြသထားပြီးမှ ပိတ်
+    }
   }
+}
+
+// theme dark,light
+function checkDarkMode() {
+  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  document.body.classList.toggle('dark', isDarkMode);
+  console.log(`isDarkMode: ${isDarkMode}`);
 }
 
 // new input
