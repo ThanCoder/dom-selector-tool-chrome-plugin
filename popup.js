@@ -106,7 +106,7 @@ async function copyTextarea() {
     document.execCommand("copy");
     alert("Copied using fallback!");
   }
-  callAutoAction()
+  callAutoAction();
 }
 
 // Data တွေကို localStorage ထဲ သိမ်းမယ့် function
@@ -122,10 +122,34 @@ function saveToStorage() {
   });
   // console.log(config);
   localStorage.setItem("chrome-dom-selector-tool-data", JSON.stringify(config));
+
+  // action
+  const actionData = {
+    copiedAutoClose: document.getElementById("copied-auto-close-checkbox")
+      .checked,
+  };
+  localStorage.setItem(
+    "chrome-dom-selector-tool-action-data",
+    JSON.stringify(actionData),
+  );
+  console.log(`Save Action: ${JSON.stringify(actionData)}`);
 }
 
 function loadFromStorage() {
   const savedData = localStorage.getItem("chrome-dom-selector-tool-data");
+  const actionJson = localStorage.getItem(
+    "chrome-dom-selector-tool-action-data",
+  );
+  const actionData = JSON.parse(actionJson);
+  // action
+  if (actionData) {
+    const autoClose = document.getElementById("copied-auto-close-checkbox");
+
+    autoClose.checked = actionData.copiedAutoClose ? true : false;
+
+    console.log(`Load Action: ${actionData}`);
+  }
+
   if (!savedData) return;
 
   const config = JSON.parse(savedData);
@@ -182,7 +206,9 @@ function createNewInput(item, attrVal = "text") {
 
 // auto action
 function callAutoAction() {
-  const copiedAutoClose = document.getElementById("copied-auto-close-checkbox").checked;
+  const copiedAutoClose = document.getElementById(
+    "copied-auto-close-checkbox",
+  ).checked;
   if (copiedAutoClose) {
     window.close();
   }
@@ -197,6 +223,9 @@ document.getElementById("addMore").addEventListener("click", () => {
 document
   .getElementById("inputContainer")
   .addEventListener("input", saveToStorage);
+document
+  .querySelector(".auto-action-group")
+  .addEventListener("click", saveToStorage);
 
 document.getElementById("extractBtn").addEventListener("click", init);
 // copy
