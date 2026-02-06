@@ -13,16 +13,18 @@ async function init() {
       attr: box.querySelector(".attr-select").value,
     };
   });
+  // actions
+  const actions = {
+    autoNextQuery: {
+      isActive: document.querySelector(".auto-next-selector-checkbox").checked,
+      attr: document.querySelector(".auto-next-selector-attr").value,
+      selector: document.querySelector(".auto-next-selector-query").value,
+      index: document.querySelector(".auto-next-selector-index").value,
+    },
+  };
   const config = {
     queries,
-    actions: {
-      autoNextQuery: {
-        isActive: document.querySelector(".auto-next-selector-checkbox")
-          .checked,
-        attr: document.querySelector(".auto-next-selector-attr").value,
-        selector: document.querySelector(".auto-next-selector-query").value,
-      },
-    },
+    actions,
   };
 
   chrome.scripting.executeScript(
@@ -54,20 +56,25 @@ async function init() {
         }
         data["data"] = results.join("\n\n");
 
-        // action query
+        // actions query
         const autoNextQuery = config.actions.autoNextQuery;
         if (autoNextQuery.isActive) {
-          const autoNextQueryEle = document.querySelector(
+          const autoNextQueryEles = document.querySelectorAll(
             autoNextQuery["selector"],
           );
-          if (autoNextQueryEle) {
-            data["autoNextQueryResult"] = "";
-            if (autoNextQuery["attr"] == "href") {
-              data["autoNextQueryResult"] = autoNextQueryEle.href;
-            }
-            if (autoNextQuery["src"] == "href") {
-              data["autoNextQueryResult"] = autoNextQueryEle.src;
-            }
+          data["autoNextQueryResult"] = "";
+          if (autoNextQuery["index"] > autoNextQueryEles.length) return data;
+
+          const targetEle = autoNextQueryEles[autoNextQuery["index"]];
+          // console.log(targetEle);
+
+          if (!targetEle) return data;
+
+          if (autoNextQuery["attr"] == "href") {
+            data["autoNextQueryResult"] = targetEle.href;
+          }
+          if (autoNextQuery["src"] == "href") {
+            data["autoNextQueryResult"] = targetEle.src;
           }
         }
         // console.log(data);
@@ -157,6 +164,7 @@ function saveToStorage() {
     autoNextUrlQuery: document.querySelector(".auto-next-selector-query").value,
     autoNextUrlQueryAttr: document.querySelector(".auto-next-selector-attr")
       .value,
+    index: document.querySelector(".auto-next-selector-index").value,
   };
   localStorage.setItem(
     "chrome-dom-selector-tool-action-data",
@@ -191,6 +199,10 @@ function loadFromStorage() {
       if (actionData["autoNextCheckBox"]) {
         document.querySelector(".auto-next-selector-checkbox").checked =
           actionData["autoNextCheckBox"] ? true : false;
+      }
+      if (actionData["index"]) {
+        const select = document.querySelector(".auto-next-selector-index");
+        select.value = actionData["index"];
       }
       if (actionData["autoNextUrlQuery"]) {
         document.querySelector(".auto-next-selector-query").value =

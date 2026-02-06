@@ -7,7 +7,7 @@ body {
 :root {
   --dark-bg-color: #121212;
   --dark-text-color: #fff;
-  --dark-scrollbar-color:#686868;
+  --dark-scrollbar-color: #686868;
 }
 /* theme */
 body.dark {
@@ -157,7 +157,9 @@ body.dark .input-box {
 }
 
 /* Number ရိုက်တဲ့ input (Index) */
-.selector-index {
+.selector-index,
+.auto-next-selector-index,
+input[type="number"] {
   width: 30px;
   padding: 6px;
   border: 1px solid #ccc;
