@@ -29,6 +29,7 @@ async function init() {
     {
       target: { tabId: tab.id },
       args: [config],
+      // html dom
       func: (config) => {
         // ဒီနေရာမှာ မိမိလိုချင်တဲ့ DOM element ကို select လုပ်ပါ
         let results = [];
@@ -56,13 +57,16 @@ async function init() {
         // action query
         const autoNextQuery = config.actions.autoNextQuery;
         if (autoNextQuery.isActive) {
-          const ele = document.querySelector(autoNextQuery["selector"]);
-          if (ele) {
+          const autoNextQueryEle = document.querySelector(
+            autoNextQuery["selector"],
+          );
+          if (autoNextQueryEle) {
+            data["autoNextQueryResult"] = "";
             if (autoNextQuery["attr"] == "href") {
-              data["autoNextQueryResult"] = ele.href;
+              data["autoNextQueryResult"] = autoNextQueryEle.href;
             }
             if (autoNextQuery["src"] == "href") {
-              data["autoNextQueryResult"] = ele.src;
+              data["autoNextQueryResult"] = autoNextQueryEle.src;
             }
           }
         }
@@ -71,6 +75,7 @@ async function init() {
         return data;
       },
     },
+    // send popup
     (injectionResults) => {
       for (const frameResult of injectionResults) {
         const textarea = document.getElementById("resultArea");
@@ -92,23 +97,6 @@ async function init() {
     },
   );
 }
-
-//remove input
-// inputContainer တစ်ခုလုံးကို Listen လုပ်ထားခြင်း (ပိုထိရောက်ပါတယ်)
-document.getElementById("inputContainer").addEventListener("click", (event) => {
-  // နှိပ်လိုက်တဲ့အရာက selector-del-btn ဟုတ်မဟုတ် စစ်မယ်
-  if (event.target.classList.contains("selector-del-btn")) {
-    // ခလုတ်ရဲ့ မိဘဖြစ်တဲ့ .input-box ကို ရှာပြီး ဖျက်ပစ်မယ်
-    const inputBox = event.target.closest(".input-box");
-
-    if (inputBox) {
-      inputBox.remove();
-
-      // ဖျက်ပြီးရင် localStorage မှာလည်း data ပြန်သိမ်းပေးရပါမယ်
-      saveToStorage();
-    }
-  }
-});
 
 async function copyTextarea() {
   const ele = document.getElementById("resultArea");
@@ -141,6 +129,8 @@ async function copyTextarea() {
   }
   callAutoAction();
 }
+
+/* -----------Storage----------- */
 
 // Data တွေကို localStorage ထဲ သိမ်းမယ့် function
 function saveToStorage() {
@@ -250,6 +240,8 @@ function loadFromStorage() {
   init();
 }
 
+/* ---------------------- */
+
 function createNewInput(item, attrVal = "text") {
   const container = document.getElementById("inputContainer");
   const box = document.createElement("div");
@@ -309,7 +301,7 @@ async function callAutoAction() {
 // theme dark,light
 function checkDarkMode() {
   const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  document.body.classList.toggle('dark', isDarkMode);
+  document.body.classList.toggle("dark", isDarkMode);
   console.log(`isDarkMode: ${isDarkMode}`);
 }
 
@@ -329,6 +321,23 @@ document
 document.getElementById("extractBtn").addEventListener("click", init);
 // copy
 document.getElementById("copyText").addEventListener("click", copyTextarea);
+
+//remove input
+// inputContainer တစ်ခုလုံးကို Listen လုပ်ထားခြင်း (ပိုထိရောက်ပါတယ်)
+document.getElementById("inputContainer").addEventListener("click", (event) => {
+  // နှိပ်လိုက်တဲ့အရာက selector-del-btn ဟုတ်မဟုတ် စစ်မယ်
+  if (event.target.classList.contains("selector-del-btn")) {
+    // ခလုတ်ရဲ့ မိဘဖြစ်တဲ့ .input-box ကို ရှာပြီး ဖျက်ပစ်မယ်
+    const inputBox = event.target.closest(".input-box");
+
+    if (inputBox) {
+      inputBox.remove();
+
+      // ဖျက်ပြီးရင် localStorage မှာလည်း data ပြန်သိမ်းပေးရပါမယ်
+      saveToStorage();
+    }
+  }
+});
 
 // Popup ပွင့်လာတာနဲ့ Load လုပ်မယ်
 document.addEventListener("DOMContentLoaded", loadFromStorage);
