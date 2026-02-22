@@ -2,70 +2,13 @@
 <html>
   <head>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="tabs.css" />
   </head>
   <body>
-    <h3>DOM Content Extractor</h3>
-    <div class="input-header">
-      <span style="width: 20px">CH</span>
-      <span style="width: 50px">Index</span>
-      <div style="width: 80px">Attribute</div>
-      <span style="flex-grow: 1">Query Selector</span>
-      <span style="width: 30px"></span>
-    </div>
-    <!-- dynamic -->
-    <div id="inputContainer"></div>
-    <!-- btn -->
-    <div class="button-group">
-      <button id="addMore">+ Add More Selector</button>
-      <button id="extractBtn">Fetch Query</button>
-      <button id="copyText" style="display: none">Copy Text</button>
-    </div>
-    <!-- auto action -->
-    <div class="auto-action-group">
-      <h3>Auto Action Methods</h3>
-      <label for="copied-auto-close-checkbox">
-        <input type="checkbox" id="copied-auto-close-checkbox" />
-        Copied Auto Close Popup Box
-      </label>
-      <!-- auto message -->
-      <label for="copied-message-checkbox">
-        <input type="checkbox" id="copied-message-checkbox" />
-        Copied Show Message
-      </label>
-      <!-- auto next container -->
-      <div class="auto-next-container">
-        <input type="checkbox" class="auto-next-selector-checkbox" />
-        <!-- index -->
-        <input
-          width="50px"
-          type="number"
-          class="auto-next-selector-index"
-          value="0"
-          min="0"
-        />
-        <!--attr  -->
-        <select class="auto-next-selector-attr">
-          <option value="src">src</option>
-          <option value="href" selected>href</option>
-        </select>
-        <input
-          type="text"
-          class="auto-next-selector-query"
-          value=""
-          placeholder="Auto Next Url Query (e.g. .selector or #selector,.otherSelector or #otherSelector,) Query"
-        />
-        <input
-          type="text"
-          class="auto-next-selector-result"
-          disabled
-          placeholder="Auto Next Url Query Result"
-        />
-      </div>
-    </div>
-    <textarea
-      id="resultArea"
-      placeholder="Result will appear here..."
-    ></textarea>
+    <div id="root-app"></div>
+
+    <script src="dom_content_extractor.js"></script>
+    <script src="tabs.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>
