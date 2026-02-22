@@ -150,7 +150,7 @@ function saveToStorage() {
       attr: box.querySelector(".attr-select").value,
     };
   });
-  // console.log(config);
+  console.log(config);
   localStorage.setItem("chrome-dom-selector-tool-data", JSON.stringify(config));
 
   // action
@@ -172,6 +172,8 @@ function saveToStorage() {
   );
   console.log(`Save Action: ${JSON.stringify(actionData)}`);
 }
+
+const configDefaultJson = `[{"index":"0","query":".chr-text,.titles h2","isActive":false,"attr":"text"},{"index":"0","query":"#chr-content,.txt,.chapter-content","isActive":true,"attr":"text"},{"index":"0","query":".title","isActive":true,"attr":"text"},{"index":"0","query":".breadcrumb-container li a","isActive":false,"attr":"href"},{"index":"0","query":".lazy","isActive":true,"attr":"src"},{"index":"0","query":".info-meta","isActive":true,"attr":"text"},{"index":"0","query":".desc-text","isActive":true,"attr":"text"},{"index":"0","query":".wp-post-image","isActive":true,"attr":"src"},{"index":"0","query":".entry-content","isActive":true,"attr":"text"}]`;
 
 // load storage
 function loadFromStorage() {
@@ -219,9 +221,13 @@ function loadFromStorage() {
     }
   }
 
-  if (!savedData) return;
-
-  const config = JSON.parse(savedData);
+  let config = {};
+  if (!savedData) {
+    config = JSON.parse(savedData);
+  } else {
+    config = JSON.parse(configDefaultJson);
+  }
+  console.log(savedData);
 
   const container = document.getElementById("inputContainer");
 
