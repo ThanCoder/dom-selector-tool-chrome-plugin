@@ -222,7 +222,7 @@ function loadFromStorage() {
   }
 
   let config = {};
-  if (!savedData) {
+  if (savedData) {
     config = JSON.parse(savedData);
   } else {
     config = JSON.parse(configDefaultJson);
