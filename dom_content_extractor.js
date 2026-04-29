@@ -2,7 +2,7 @@ function createDomContentExtractor() {
   const rootEle = document.querySelector(".tab-content");
 
   rootEle.innerHTML = `
-  <h3>DOM Content Extractor</h3>
+  <h3>Chrome DOM Content Extractor</h3>
     <div class="input-header">
       <span style="width: 20px">CH</span>
       <span style="width: 50px">Index</span>
@@ -77,7 +77,11 @@ function createDomContentExtractor() {
     .querySelector(".auto-action-group")
     .addEventListener("click", saveToStorage);
 
-  document.getElementById("extractBtn").addEventListener("click", init);
+  document.getElementById("extractBtn").addEventListener("click", ()=>{
+    saveToStorage()
+    init()
+
+  });
   // copy
   document.getElementById("copyText").addEventListener("click", copyTextarea);
 
@@ -190,7 +194,7 @@ async function init() {
     (injectionResults) => {
       for (const frameResult of injectionResults) {
         const textarea = document.getElementById("resultArea");
-        textarea.value = frameResult.result.data;
+        textarea.value = frameResult.result.data.trim();
         if (frameResult.result) {
           textarea.style.height = "200px";
           document.getElementById("copyText").style.display = "block";
@@ -214,9 +218,10 @@ async function copyTextarea() {
   const textToCopy = ele.value;
 
   if (!textToCopy) {
-    alert("Copy လုပ်ဖို့ စာသားမရှိပါဘူး။");
+    alert("Copy Text Not Found!");
     return;
   }
+  saveToStorage()
 
   try {
     // Clipboard ထဲသို့ ကူးထည့်ခြင်း

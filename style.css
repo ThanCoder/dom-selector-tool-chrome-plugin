@@ -3,6 +3,7 @@ body {
   padding: 5px;
   font-family: sans-serif;
   scrollbar-width: thin;
+  font-size: .6em;
 }
 :root {
   --dark-bg-color: #121212;
